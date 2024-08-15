@@ -4,6 +4,16 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
@@ -108,16 +118,13 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
 
   @override
   Future<Duration> getPosition(int textureId) async {
-    final PositionMessage response =
-        await _api.position(TextureMessage(textureId: textureId));
+    final PositionMessage response = await _api.position(TextureMessage(textureId: textureId));
     return Duration(milliseconds: response.position);
   }
 
   @override
   Stream<VideoEvent> videoEventsFor(int textureId) {
-    return _eventChannelFor(textureId)
-        .receiveBroadcastStream()
-        .map((dynamic event) {
+    return _eventChannelFor(textureId).receiveBroadcastStream().map((dynamic event) {
       final Map<dynamic, dynamic> map = event as Map<dynamic, dynamic>;
       switch (map['event']) {
         case 'initialized':
@@ -156,16 +163,14 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
 
   @override
   Future<void> setMixWithOthers(bool mixWithOthers) {
-    return _api
-        .setMixWithOthers(MixWithOthersMessage(mixWithOthers: mixWithOthers));
+    return _api.setMixWithOthers(MixWithOthersMessage(mixWithOthers: mixWithOthers));
   }
 
   EventChannel _eventChannelFor(int textureId) {
     return EventChannel('flutter.io/videoPlayer/videoEvents$textureId');
   }
 
-  static const Map<VideoFormat, String> _videoFormatStringMap =
-      <VideoFormat, String>{
+  static const Map<VideoFormat, String> _videoFormatStringMap = <VideoFormat, String>{
     VideoFormat.ss: 'ss',
     VideoFormat.hls: 'hls',
     VideoFormat.dash: 'dash',
@@ -178,5 +183,62 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
       Duration(milliseconds: pair[0] as int),
       Duration(milliseconds: pair[1] as int),
     );
+  }
+
+  @override
+  Future<void> setCurrentPlayingInfo(int textureId,
+      {String? title, String? artist, String? artwork, String? album}) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> setMuxData(int textureId,
+      {required String environmentKey,
+      required String userId,
+      required int videoId,
+      required int videoVariantId,
+      required String videoTitle}) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> startPictureInPicture(int textureId,
+      {required double top, required double left, required double width, required double height}) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> stopPictureInPicture(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<bool> isPictureInPictureSupported(int textureId) {
+    return Future<bool>.value(false);
+  }
+
+  @override
+  Future<void> enterFullscreen(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> exitFullscreen(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> selectClosedCaptionLocale(int textureId, String localeIdentifier) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> clearClosedCaptionLocaleSelection(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> setVideoChapters(int textureId, List<Chapter> chapters) {
+    return Future<void>.value();
   }
 }

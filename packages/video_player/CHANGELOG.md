@@ -1,3 +1,7 @@
+## 2.4.9+1
+
+* Custom functions from `Uscreen-video.video_player` are silenced to avoid exceptions: `setCurrentPlayingInfo`, `setMuxData`, `startPictureInPicture`, `stopPictureInPicture`, `isPictureInPictureSupported`, `enterFullscreen`, `exitFullscreen`, `selectClosedCaptionLocale`, `clearClosedCaptionLocaleSelection`, `setVideoChapters`.
+
 ## NEXT
 
 * Fix new lint warnings.

@@ -9,9 +9,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  video_player: ^2.4.2
+  video_player:
+    git:
+      url: git@github.com:Uscreen-video/video_player.git
+      path: packages/video_player/video_player
+      ref: video_player-v2.8.5+4
   video_player_tizen:
     path: ../
+
+dependency_overrides:
+  video_player_platform_interface:
+    git:
+      url: git@github.com:Uscreen-video/video_player.git
+      path: packages/video_player/video_player_platform_interface
+      ref: video_player_platform_interface-v6.2.2+3
 
 dev_dependencies:
   flutter_driver:

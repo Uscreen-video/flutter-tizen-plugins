@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:wakelock_plus_platform_interface/wakelock_plus_platform_interface.dart';
 
-const MethodChannel _channel = MethodChannel('tizen/wakelock_plugin');
+const MethodChannel _channel = MethodChannel('tizen/wakelock_plus_plugin');
 
 /// A Tizen implementation of [WakelockPlusPlatformInterface].
 class WakelockPlusTizen extends WakelockPlusPlatformInterface {

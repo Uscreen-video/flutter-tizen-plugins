@@ -20,7 +20,7 @@ class WakelockPlusTizenPlugin : public flutter::Plugin {
   static void RegisterWithRegistrar(flutter::PluginRegistrar *registrar) {
     auto channel =
         std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
-            registrar->messenger(), "tizen/wakelock_plugin",
+            registrar->messenger(), "tizen/wakelock_plus_plugin",
             &flutter::StandardMethodCodec::GetInstance());
 
     auto plugin = std::make_unique<WakelockPlusTizenPlugin>();

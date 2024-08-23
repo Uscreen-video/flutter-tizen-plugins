@@ -1,3 +1,7 @@
+## 0.1.0+1
+
+* IAP logic disabled on Tizen layer.
+
 ## NEXT
 
 * Fix new lint warnings.

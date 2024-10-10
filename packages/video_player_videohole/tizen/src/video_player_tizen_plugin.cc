@@ -294,9 +294,7 @@ std::optional<FlutterError> VideoPlayerTizenPlugin::Pause(
   if (!player) {
     return FlutterError("Invalid argument", "Player not found");
   }
-  if (!player->Pause()) {
-    return FlutterError("Pause", "Player pause failed");
-  }
+  player->Pause();
   return std::nullopt;
 }
 

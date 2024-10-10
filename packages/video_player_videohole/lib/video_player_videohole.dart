@@ -8,14 +8,19 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../video_player_platform_interface.dart';
-import 'messages.g.dart';
-import 'tracks.dart';
+import 'package:video_player_platform_interface/video_player_platform_interface.dart';
+import 'src/messages.g.dart';
+import 'src/tracks.dart';
 
 /// An implementation of [VideoPlayerPlatform] that uses the
 /// Pigeon-generated [VideoPlayerVideoholeApi].
 class VideoPlayerTizen extends VideoPlayerPlatform {
   final VideoPlayerVideoholeApi _api = VideoPlayerVideoholeApi();
+
+  /// Registers this class as the default platform instance.
+  static void register() {
+    VideoPlayerPlatform.instance = VideoPlayerTizen();
+  }
 
   @override
   Future<void> init() {
@@ -39,8 +44,8 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
         message.uri = dataSource.uri;
         message.formatHint = _videoFormatStringMap[dataSource.formatHint];
         message.httpHeaders = dataSource.httpHeaders;
-        message.drmConfigs = dataSource.drmConfigs?.toMap();
-        message.playerOptions = dataSource.playerOptions;
+      // message.drmConfigs = dataSource.drmConfigs?.toMap();
+      // message.playerOptions = dataSource.playerOptions;
       case DataSourceType.file:
         message.uri = dataSource.uri;
       case DataSourceType.contentUri:
@@ -53,8 +58,7 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
 
   @override
   Future<void> setLooping(int playerId, bool looping) {
-    return _api
-        .setLooping(LoopingMessage(playerId: playerId, isLooping: looping));
+    return _api.setLooping(LoopingMessage(playerId: playerId, isLooping: looping));
   }
 
   @override
@@ -73,27 +77,33 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
   }
 
   @override
-  Future<void> pause(int playerId) {
-    return _api.pause(PlayerMessage(playerId: playerId));
+  Future<void> pause(int playerId) async {
+    try {
+      await _api.pause(PlayerMessage(playerId: playerId));
+    } catch (e) {
+      return;
+    }
   }
 
   @override
-  Future<void> setVolume(int playerId, double volume) {
-    return _api.setVolume(VolumeMessage(playerId: playerId, volume: volume));
+  Future<void> setVolume(int playerId, double volume) async {
+    try {
+      await _api.setVolume(VolumeMessage(playerId: playerId, volume: volume));
+    } catch (e) {
+      return;
+    }
   }
 
   @override
   Future<void> setPlaybackSpeed(int playerId, double speed) {
     assert(speed > 0);
 
-    return _api.setPlaybackSpeed(
-        PlaybackSpeedMessage(playerId: playerId, speed: speed));
+    return _api.setPlaybackSpeed(PlaybackSpeedMessage(playerId: playerId, speed: speed));
   }
 
   @override
   Future<void> seekTo(int playerId, Duration position) {
-    return _api.seekTo(
-        PositionMessage(playerId: playerId, position: position.inMilliseconds));
+    return _api.seekTo(PositionMessage(playerId: playerId, position: position.inMilliseconds));
   }
 
   @override
@@ -132,8 +142,7 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
     for (final Map<Object?, Object?>? trackMap in response.tracks) {
       final int trackId = trackMap!['trackId']! as int;
       final String language = trackMap['language']! as String;
-      final AudioTrackChannelType channelType =
-          _intChannelTypeMap[trackMap['channel']]!;
+      final AudioTrackChannelType channelType = _intChannelTypeMap[trackMap['channel']]!;
       final int bitrate = trackMap['bitrate']! as int;
 
       audioTracks.add(AudioTrack(
@@ -147,65 +156,61 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
     return audioTracks;
   }
 
-  @override
-  Future<List<TextTrack>> getTextTracks(int playerId) async {
-    final TrackMessage response = await _api.track(TrackTypeMessage(
-      playerId: playerId,
-      trackType: TrackType.text.name,
-    ));
+  // @override
+  // Future<List<TextTrack>> getTextTracks(int playerId) async {
+  //   final TrackMessage response = await _api.track(TrackTypeMessage(
+  //     playerId: playerId,
+  //     trackType: TrackType.text.name,
+  //   ));
 
-    final List<TextTrack> textTracks = <TextTrack>[];
-    for (final Map<Object?, Object?>? trackMap in response.tracks) {
-      final int trackId = trackMap!['trackId']! as int;
-      final String language = trackMap['language']! as String;
+  //   final List<TextTrack> textTracks = <TextTrack>[];
+  //   for (final Map<Object?, Object?>? trackMap in response.tracks) {
+  //     final int trackId = trackMap!['trackId']! as int;
+  //     final String language = trackMap['language']! as String;
 
-      textTracks.add(TextTrack(
-        trackId: trackId,
-        language: language,
-      ));
-    }
+  //     textTracks.add(TextTrack(
+  //       trackId: trackId,
+  //       language: language,
+  //     ));
+  //   }
 
-    return textTracks;
-  }
+  //   return textTracks;
+  // }
 
-  @override
-  Future<bool> setTrackSelection(int playerId, Track track) {
-    return _api.setTrackSelection(SelectedTracksMessage(
-      playerId: playerId,
-      trackId: track.trackId,
-      trackType: track.trackType.name,
-    ));
-  }
+  // @override
+  // Future<bool> setTrackSelection(int playerId, Track track) {
+  //   return _api.setTrackSelection(SelectedTracksMessage(
+  //     playerId: playerId,
+  //     trackId: track.trackId,
+  //     trackType: track.trackType.name,
+  //   ));
+  // }
 
-  @override
-  Future<DurationRange> getDuration(int playerId) async {
-    final DurationMessage message =
-        await _api.duration(PlayerMessage(playerId: playerId));
-    return DurationRange(Duration(milliseconds: message.durationRange?[0] ?? 0),
-        Duration(milliseconds: message.durationRange?[1] ?? 0));
-  }
+  // @override
+  // Future<DurationRange> getDuration(int playerId) async {
+  //   final DurationMessage message =
+  //       await _api.duration(PlayerMessage(playerId: playerId));
+  //   return DurationRange(Duration(milliseconds: message.durationRange?[0] ?? 0),
+  //       Duration(milliseconds: message.durationRange?[1] ?? 0));
+  // }
 
   @override
   Future<Duration> getPosition(int playerId) async {
-    final PositionMessage response =
-        await _api.position(PlayerMessage(playerId: playerId));
+    final PositionMessage response = await _api.position(PlayerMessage(playerId: playerId));
     return Duration(milliseconds: response.position);
   }
 
   @override
   Stream<VideoEvent> videoEventsFor(int playerId) {
-    return _eventChannelFor(playerId)
-        .receiveBroadcastStream()
-        .map((dynamic event) {
+    return _eventChannelFor(playerId).receiveBroadcastStream().map((dynamic event) {
       final Map<dynamic, dynamic> map = event as Map<dynamic, dynamic>;
+      print(map);
       switch (map['event']) {
         case 'initialized':
           final List<dynamic>? durationVal = map['duration'] as List<dynamic>?;
           return VideoEvent(
             eventType: VideoEventType.initialized,
-            duration: DurationRange(
-                Duration(milliseconds: durationVal?[0] as int),
-                Duration(milliseconds: durationVal?[1] as int)),
+            duration: Duration(milliseconds: durationVal?[1] as int),
             size: Size((map['width'] as num?)?.toDouble() ?? 0.0,
                 (map['height'] as num?)?.toDouble() ?? 0.0),
           );
@@ -217,7 +222,7 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
           final int value = map['value']! as int;
 
           return VideoEvent(
-            buffered: value,
+            buffered: [DurationRange(Duration.zero, Duration(milliseconds: value))],
             eventType: VideoEventType.bufferingUpdate,
           );
         case 'bufferingStart':
@@ -226,8 +231,8 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
           return VideoEvent(eventType: VideoEventType.bufferingEnd);
         case 'subtitleUpdate':
           return VideoEvent(
-            eventType: VideoEventType.subtitleUpdate,
-            text: map['text']! as String,
+            eventType: VideoEventType.caption,
+            caption: VideoCaption(value: map['text']! as String, offset: 0.0),
           );
         default:
           return VideoEvent(eventType: VideoEventType.unknown);
@@ -242,11 +247,11 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
 
   @override
   Future<void> setMixWithOthers(bool mixWithOthers) {
-    return _api
-        .setMixWithOthers(MixWithOthersMessage(mixWithOthers: mixWithOthers));
+    return _api.setMixWithOthers(MixWithOthersMessage(mixWithOthers: mixWithOthers));
   }
 
-  @override
+  // @override
+  ///
   Future<void> setDisplayGeometry(
     int playerId,
     int x,
@@ -267,18 +272,73 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
     return EventChannel('tizen/video_player/video_events_$playerId');
   }
 
-  static const Map<VideoFormat, String> _videoFormatStringMap =
-      <VideoFormat, String>{
+  static const Map<VideoFormat, String> _videoFormatStringMap = <VideoFormat, String>{
     VideoFormat.ss: 'ss',
     VideoFormat.hls: 'hls',
     VideoFormat.dash: 'dash',
     VideoFormat.other: 'other',
   };
 
-  static const Map<int, AudioTrackChannelType> _intChannelTypeMap =
-      <int, AudioTrackChannelType>{
+  static const Map<int, AudioTrackChannelType> _intChannelTypeMap = <int, AudioTrackChannelType>{
     1: AudioTrackChannelType.mono,
     2: AudioTrackChannelType.stereo,
     3: AudioTrackChannelType.surround,
   };
+
+  @override
+  Future<void> setCurrentPlayingInfo(int textureId,
+      {String? title, String? artist, String? artwork, String? album}) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> setMuxData(int textureId,
+      {required String environmentKey,
+      required String userId,
+      required int videoId,
+      required int videoVariantId,
+      required String videoTitle}) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> startPictureInPicture(int textureId,
+      {required double top, required double left, required double width, required double height}) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> stopPictureInPicture(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<bool> isPictureInPictureSupported(int textureId) {
+    return Future<bool>.value(false);
+  }
+
+  @override
+  Future<void> enterFullscreen(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> exitFullscreen(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> selectClosedCaptionLocale(int textureId, String localeIdentifier) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> clearClosedCaptionLocaleSelection(int textureId) {
+    return Future<void>.value();
+  }
+
+  @override
+  Future<void> setVideoChapters(int textureId, List<Chapter> chapters) {
+    return Future<void>.value();
+  }
 }

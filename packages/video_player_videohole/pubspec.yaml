@@ -14,12 +14,15 @@ flutter:
       tizen:
         pluginClass: VideoPlayerTizenPlugin
         fileName: video_player_tizen_plugin.h
+        dartPluginClass: VideoPlayerTizen
 
 dependencies:
   flutter:
     sdk: flutter
   html: ^0.15.0
-  plugin_platform_interface: ^2.1.0
+  video_player_platform_interface:
+    hosted: https://pub.uscreen.cloud
+    version: ">=6.2.2+3 <7.0.0"
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,10 @@
 * Fix new lint warnings.
 * Update minimum Flutter and Dart version to 3.13 and 3.1.
 
+## 0.5.1+1
+
+* `VideoPlayerTizen.create` signature updated to match the new `VideoPlayerPlatform` interface.
+
 ## 0.5.1
 
 * Free response buffer after install key.

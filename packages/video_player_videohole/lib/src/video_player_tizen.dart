@@ -33,7 +33,7 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
   }
 
   @override
-  Future<int?> create(DataSource dataSource) async {
+  Future<int?> create(DataSource dataSource, {dynamic drmOptions}) async {
     final CreateMessage message = CreateMessage();
 
     switch (dataSource.sourceType) {

@@ -121,8 +121,8 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
 
     return videoTracks;
   }
-  /// List of audio tracks
 
+  /// List of audio tracks
   Future<List<AudioTrack>> getAudioTracks(int playerId) async {
     final TrackMessage response = await _api.track(TrackTypeMessage(
       playerId: playerId,

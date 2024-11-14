@@ -97,6 +97,7 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
   }
 
   /// List of video tracks
+
   Future<List<VideoTrack>> getVideoTracks(int textureId) async {
     final TrackMessage response = await _api.track(TrackTypeMessage(
       playerId: textureId,
@@ -120,8 +121,8 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
 
     return videoTracks;
   }
-
   /// List of audio tracks
+
   Future<List<AudioTrack>> getAudioTracks(int playerId) async {
     final TrackMessage response = await _api.track(TrackTypeMessage(
       playerId: playerId,
@@ -145,7 +146,6 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
 
     return audioTracks;
   }
-
   @override
   Future<Duration> getPosition(int textureId) async {
     final PositionMessage response = await _api.position(PlayerMessage(playerId: textureId));
@@ -299,5 +299,9 @@ class VideoPlayerTizen extends VideoPlayerPlatform {
   @override
   Future<void> setVideoChapters(int textureId, List<Chapter> chapters) {
     return Future<void>.value();
+  }
+
+  Future<bool> isAutoPictureInPictureSupported() async {
+    return false;
   }
 }
